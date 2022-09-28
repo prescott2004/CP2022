@@ -28,36 +28,44 @@ void error()
         cout << "Error\n";
     }
 }
-int N, K;
+ll N, K;
 vl A;
-ll solver()
+void solver()
 {
-    // dp[手番][残りの個数]=そこから始めたときの高橋君の石の個数の最大値
-    vector<vl> dp(2, vl(N + 1, 0));
+    vl d(A);
+    sort(d.begin(), d.end());
+    for (ll i = 0; i < N - 1; i++)
+    {
+        d[i + 1] -= d[i];
+    }
+    vector<pll> AA(N);
     for (ll i = 0; i < N; i++)
     {
-        dp[1][i + 1] = INFTY;
-        for (ll j = 0; j < K; j++)
+        AA[i] = make_pair(A[i], i);
+    }
+    sort(AA.begin(), AA.end());
+    ll k = K;
+    for (ll i = 0; i < N; i++)
+    {
+        if (d[i] * (N - i) <= k)
         {
-            if (A[j] <= i + 1)
-            {
-                dp[0][i + 1] = max(dp[0][i + 1], dp[1][i + 1 - A[j]] + A[j]);
-                dp[1][i + 1] = min(dp[1][i + 1], dp[0][i + 1 - A[j]]);
-            }
+            k -= d[i] * (N - i);
+        }
+        else
+        {
+            k -=
         }
     }
-    return dp[0][N];
 }
 int main()
 {
     cin.tie(0);
     ios::sync_with_stdio(false);
     cin >> N >> K;
-    A.resize(K);
-    for (ll i = 0; i < K; i++)
+    A.resize(N);
+    for (ll i = 0; i < N; i++)
     {
         cin >> A[i];
     }
-    // メモ化再帰
-    cout << solver() << endl;
+    solver();
 }
