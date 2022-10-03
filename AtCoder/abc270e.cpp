@@ -32,19 +32,19 @@ ll N, K;
 vl A;
 void solver()
 {
+    // A[0]=d[0]
+    // A[1]=d[1]+A[0]
     vl d(A);
     sort(d.begin(), d.end());
+    vl AA(d);
     for (ll i = 0; i < N - 1; i++)
     {
-        d[i + 1] -= d[i];
-    }
-    vector<pll> AA(N);
-    for (ll i = 0; i < N; i++)
-    {
-        AA[i] = make_pair(A[i], i);
+        d[i + 1] = AA[i + 1] - AA[i];
     }
     sort(AA.begin(), AA.end());
+    vl ans(A);
     ll k = K;
+    ll cnt = 0;
     for (ll i = 0; i < N; i++)
     {
         if (d[i] * (N - i) <= k)
@@ -53,9 +53,63 @@ void solver()
         }
         else
         {
-            k -=
+            cnt = i;
+            break;
+        }
+        cnt = i + 1;
+    }
+    for (ll i = 0; i < N; i++)
+    {
+        if (cnt && ans[i] <= AA[cnt - 1])
+        {
+            ans[i] = 0;
+        }
+        else
+        {
+            if (cnt)
+            {
+                ans[i] -= AA[cnt - 1];
+            }
+            ans[i] -= k / (N - cnt);
         }
     }
+    if (cnt != N)
+    {
+        k %= (N - cnt);
+    }
+    else
+    {
+        k = 0;
+    }
+    sl s;
+    for (ll i = 0; i < N; i++)
+    {
+        if (ans[i])
+        {
+            s.emplace(i);
+        }
+    }
+    while (!s.empty() && k > 0)
+    {
+        for (auto e : s)
+        {
+            if (!k)
+            {
+                break;
+            }
+            --ans[e];
+            --k;
+            if (!ans[e])
+            {
+                s.erase(e);
+            }
+        }
+    }
+    for (ll i = 0; i < N; i++)
+    {
+        cout << ans[i] << ' ';
+    }
+    cout << endl;
 }
 int main()
 {
