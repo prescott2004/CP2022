@@ -32,32 +32,34 @@ ll N, M;
 vector<vl> B;
 void solver()
 {
+    vector<pll> D;
+    for (ll di = -N; di < N; di++)
+    {
+        if (di * di > M)
+        {
+            continue;
+        }
+        ll dj = sqrt(M - di * di);
+        if (di * di + dj * dj == M)
+        {
+            D.emplace_back(di, dj);
+            D.emplace_back(di, -dj);
+        }
+    }
     B[0][0] = 0;
     queue<pll> Q;
     Q.emplace(0, 0);
-    ll i, j, k, l1, l2;
     while (!Q.empty())
     {
-        auto [i, j] = Q.front();
+        ll i = Q.front().first, j = Q.front().second;
         Q.pop();
-        for (k = 0; k < N; k++)
+        for (pll &p : D)
         {
-            // (l-j)*(l-j)=M-(k-i)*(k-i)
-            ll r = M - (k - i) * (k - i);
-            if (r >= 0 && (ll)sqrt(r) * (ll)sqrt(r) == r)
+            ll ni = i + p.first, nj = j + p.second;
+            if (ni >= 0 && ni < N && nj >= 0 && nj < N && B[ni][nj] == -1)
             {
-                auto check = [&](ll l) -> void
-                {
-                    if (l >= 0 && l < N && B[k][l] == -1)
-                    {
-                        B[k][l] = B[i][j] + 1;
-                        Q.emplace(k, l);
-                    }
-                };
-                l1 = j + (ll)sqrt(r);
-                l2 = j - (ll)sqrt(r);
-                check(l1);
-                check(l2);
+                B[ni][nj] = B[i][j] + 1;
+                Q.emplace(ni, nj);
             }
         }
     }
