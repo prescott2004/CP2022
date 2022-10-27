@@ -6,6 +6,7 @@
         "**/templates/**/*": "django-txt",
         "**/requirements{/**,*}.{txt,in}": "pip-requirements",
         "*.strings": "plist",
-        "tuple": "cpp"
+        "tuple": "cpp",
+        "ostream": "cpp"
     }
 }
